@@ -48,7 +48,7 @@ class EGLImageWrapper {
  #ifndef TARGET_ION_ABI_VERSION
    int ion_fd = -1;
  #else
-   uint64_t buffInt = 0;
+   int buffInt = 0;
  #endif
 
  public:
