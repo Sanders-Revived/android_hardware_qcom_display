@@ -8,6 +8,8 @@ soong_config_module_type {
     ],
 }
 
+libion_include_dirs = ["system/memory/libion/include", "system/memory/libion/kernel-headers"]
+
 target_board_platform_cc_library_shared {
     name: "gralloc.qcom",
     soong_config_variables: {
@@ -27,14 +29,24 @@ target_board_platform_cc_library_shared {
         "gr_buf_mgr.cpp",
         "gr_device_impl.cpp",
     ],
+    include_dirs: select(soong_config_variable("qtidisplay", "target_kernel_version"), {
+        "4.14": libion_include_dirs,
+        "4.19": libion_include_dirs,
+        default: [],
+    }),
     shared_libs: [
         "libqdMetaData",
         "libsync",
         "libgrallocutils",
         "android.hardware.graphics.common@1.1",
-    ],
+    ] + select(soong_config_variable("qtidisplay", "target_kernel_version"), {
+        "4.14": ["libion"],
+        "4.19": ["libion"],
+        default: [],
+    }),
     cflags: [
         "-DLOG_TAG=\"qdgralloc\"",
+        "-Wno-enum-enum-conversion",
     ],
     header_libs: [
         "display_headers",
@@ -60,6 +72,7 @@ cc_library_shared {
         "-Wno-sign-conversion",
         "-Wno-unused-parameter",
         "-Wno-unused-variable",
+        "-Wno-enum-enum-conversion",
     ],
     header_libs: [
         "display_headers",

@@ -14,7 +14,11 @@ cc_library_shared {
         "-Wno-unused-parameter",
         "-fcolor-diagnostics",
         "-DLOG_TAG=\"SDM\"",
-    ] + select(soong_config_variable("qtidisplay", "wide_color"), {
+    ] + select(soong_config_variable("qtidisplay", "target_kernel_version"), {
+        "4.14": ["-DTARGET_MIN_KERNEL_4_14"],
+        "4.19": ["-DTARGET_MIN_KERNEL_4_14"],
+        default: [],
+    }) + select(soong_config_variable("qtidisplay", "wide_color"), {
         "true": ["-DFEATURE_WIDE_COLOR"],
         default: [],
     }),
